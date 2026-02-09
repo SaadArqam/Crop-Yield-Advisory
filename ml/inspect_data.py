@@ -9,6 +9,6 @@ print(df.columns)
 
 df = df.drop(columns=['Unnamed: 0'],inplace=True)
 
-X = df.drop(columns=['hg/ha_yield'])
-y = df['hg/ha_yield']
+# X = df.drop(columns=['hg/ha_yield'])
+# y = df['hg/ha_yield']
 
