@@ -2,7 +2,9 @@
 
 
 # to run locally
+```
 python3 <filename>
+```
 
 ## Create a virtual environment
 ```
