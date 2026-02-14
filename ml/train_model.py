@@ -4,6 +4,7 @@ from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 import joblib
 import numpy as np
+import os
 
 df=pd.read_csv("data/processed_data.csv")
 
@@ -33,5 +34,9 @@ print("RMSE:", rmse)
 print("R2 Score:", r2)
 
 
+
+
+os.makedirs("models", exist_ok=True)
 joblib.dump(model, "models/crop_yield_model.pkl")
+
 print("Model saved.")
