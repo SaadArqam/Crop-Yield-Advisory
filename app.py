@@ -143,6 +143,69 @@ def generate_advice(risks, inputs, predicted_yield_tons):
         elif "production risk" in risk.lower():
             advice.append("Consult agronomist; review soil nutrients and fertilizer schedule")
     return list(set(advice))
+
+def run_agent(inputs, model, medians_dict):
+    # Preprocess
+    X = pd.DataFrame([inputs])
+    Xp = apply_simple_preprocessing(X)
+    Xp_model = align_to_model(Xp, model, medians_dict)
+    
+    # Predict (assumes model predicts in hg/ha)
+    pred_hg_ha = float(model.predict(Xp_model)[0])
+    pred_tons_ha = pred_hg_ha / 10000.0
+    
+    # 1. Analyze Risks
+    risks = analyze_risks(inputs, pred_tons_ha)
+    
+    # 2. Generate Advice
+    advice = generate_advice(risks, inputs, pred_tons_ha)
+    
+    # 3. Structured Report Output
+    st.markdown("---")
+    st.markdown("## 📄 Agentic Pipeline: Structured Report Output")
+    
+    col1, col2 = st.columns(2)
+    with col1:
+        st.markdown("### 🌾 Crop Summary")
+        st.write(f"**Crop Name:** {inputs.get('Item', 'N/A')}")
+        st.write(f"**Region:** {inputs.get('Area', 'N/A')}")
+        st.write(f"**Year:** {inputs.get('Year', 'N/A')}")
+        with st.expander("View Input Values Used"):
+            st.json(inputs)
+            
+    with col2:
+        st.markdown("### 📊 Yield Interpretation")
+        if pred_tons_ha < 2.0:
+            yield_label = "Low"
+            color = "red"
+        elif pred_tons_ha < 5.0:
+            yield_label = "Medium"
+            color = "orange"
+        else:
+            yield_label = "High"
+            color = "green"
+        st.markdown(f"**Predicted Yield:** {pred_tons_ha:.2f} tons/ha")
+        st.markdown(f"**Yield Level:** :{color}[{yield_label}]")
+        
+    st.markdown("### ⚠️ Risk Factors")
+    if risks:
+        for r in risks:
+            st.markdown(f"- {r}")
+    else:
+        st.markdown("- No major risks identified.")
+        
+    st.markdown("### 💡 Recommended Actions")
+    for a in advice:
+        st.markdown(f"- {a}")
+        
+    st.markdown("### 📚 References")
+    st.markdown("- FAO Crop Guidelines 2023")
+    st.markdown("- ICAR Agronomy Manual")
+    
+    st.markdown("### ⚖️ Disclaimer")
+    st.caption("This report is AI-generated. Consult a certified agronomist before making decisions.")
+
+# --- End Agentic AI Layers ---
 mode = st.sidebar.selectbox('Input mode', ['Single record', 'Upload CSV (raw or processed)'])
 
 st.sidebar.markdown('---')
