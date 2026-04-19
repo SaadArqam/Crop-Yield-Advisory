@@ -33,77 +33,107 @@ def local_css():
         font-family: 'Poppins', sans-serif;
     }
     
-    .stApp {
-        background: linear-gradient(135deg, #F9F3E3 0%, #FFFFFF 100%);
+    /* Theme-aware background and text */
+    [data-testid="stAppViewContainer"] {
+        background: var(--background-color);
+        background-image: linear-gradient(135deg, rgba(27, 94, 32, 0.05) 0%, rgba(255, 255, 255, 0.05) 100%);
     }
     
-    /* Sidebar styling */
-    section[data-testid="stSidebar"] {
-        background-color: #FFFFFF !important;
-        border-right: 1px solid #E0E0E0;
+    /* Navigation Sidebar */
+    [data-testid="stSidebar"] {
+        border-right: 1px solid rgba(128, 128, 128, 0.2);
     }
     
-    /* Card styling */
+    /* Uniform Card Styling */
     .stCard {
-        background: rgba(255, 255, 255, 0.9);
-        backdrop-filter: blur(10px);
-        padding: 2.5rem;
+        background-color: var(--secondary-background-color);
+        padding: 2rem;
         border-radius: 16px;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-        border: 1px solid rgba(27, 94, 32, 0.1);
+        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        border: 1px solid rgba(27, 94, 32, 0.2);
         margin-bottom: 25px;
+        color: var(--text-color);
     }
     
-    /* Metric styling */
+    /* Metric Styling */
     .metric-card {
-        background: white;
+        background-color: var(--secondary-background-color);
         padding: 2rem;
         border-radius: 16px;
         text-align: center;
-        box-shadow: 0 8px 24px rgba(0,0,0,0.04);
+        box-shadow: 0 8px 16px rgba(0,0,0,0.1);
         border-bottom: 4px solid #1B5E20;
+        color: var(--text-color);
     }
     
-    .yield-high { color: #1B5E20; font-weight: 700; font-size: 3rem; margin: 0; }
-    .yield-medium { color: #FBC02D; font-weight: 700; font-size: 3rem; margin: 0; }
-    .yield-low { color: #C62828; font-weight: 700; font-size: 3rem; margin: 0; }
+    .yield-high { color: #2E7D32; font-weight: 700; font-size: 3.5rem; margin: 0; }
+    .yield-medium { color: #FBC02D; font-weight: 700; font-size: 3.5rem; margin: 0; }
+    .yield-low { color: #C62828; font-weight: 700; font-size: 3.5rem; margin: 0; }
     
     .badge {
-        padding: 6px 16px;
+        padding: 8px 20px;
         border-radius: 30px;
-        font-size: 0.9rem;
+        font-size: 0.95rem;
         font-weight: 600;
         text-transform: uppercase;
         letter-spacing: 1px;
+        display: inline-block;
+        margin-top: 10px;
     }
-    .badge-high { background-color: #E8F5E9; color: #1B5E20; border: 1px solid #1B5E20; }
-    .badge-medium { background-color: #FFFDE7; color: #FBC02D; border: 1px solid #FBC02D; }
-    .badge-low { background-color: #FFEBEE; color: #C62828; border: 1px solid #C62828; }
+    .badge-high { background-color: rgba(46, 125, 50, 0.2); color: #2E7D32; border: 1px solid #2E7D32; }
+    .badge-medium { background-color: rgba(251, 192, 45, 0.2); color: #FBC02D; border: 1px solid #FBC02D; }
+    .badge-low { background-color: rgba(198, 40, 40, 0.2); color: #C62828; border: 1px solid #C62828; }
     
     .risk-chip {
         display: inline-block;
-        padding: 6px 14px;
-        margin: 5px;
-        border-radius: 20px;
+        padding: 10px 18px;
+        margin: 8px 4px;
+        border-radius: 12px;
         font-size: 0.9rem;
         font-weight: 500;
+        border-left: 4px solid #1B5E20;
+        background-color: rgba(128, 128, 128, 0.1);
     }
-    .risk-high { background-color: #FFEBEE; color: #C62828; }
-    .risk-medium { background-color: #FFF9C4; color: #7F6500; }
+    .risk-high { background-color: rgba(198, 40, 40, 0.1); color: #C62828; border-left-color: #C62828; }
+    .risk-medium { background-color: rgba(251, 192, 45, 0.1); color: #FBC02D; border-left-color: #FBC02D; }
     
-    .stButton>button {
-        background: linear-gradient(90deg, #1B5E20 0%, #2E7D32 100%);
-        color: white;
-        border: None;
-        padding: 0.75rem 2rem;
-        border-radius: 50px;
+    /* Buttons */
+    .stButton > button {
+        background: #1B5E20;
+        color: white !important;
+        border: none;
+        padding: 0.8rem 2.5rem;
+        border-radius: 12px;
         font-weight: 600;
         width: 100%;
         transition: all 0.3s ease;
     }
-    .stButton>button:hover {
-        transform: scale(1.02);
-        box-shadow: 0 4px 15px rgba(27, 94, 32, 0.3);
+    .stButton > button:hover {
+        background: #2E7D32;
+        box-shadow: 0 4px 12px rgba(27, 94, 32, 0.4);
+        transform: translateY(-2px);
+    }
+    
+    /* Typography */
+    h1, h2, h3 {
+        color: #1B5E20;
+        font-weight: 700;
+    }
+    
+    /* Custom Sidebar Title */
+    .sidebar-title {
+        color: #1B5E20;
+        font-size: 1.8rem;
+        font-weight: 700;
+        text-align: center;
+        margin-bottom: 0px;
+    }
+    .sidebar-sub {
+        color: var(--text-color);
+        font-size: 0.9rem;
+        text-align: center;
+        opacity: 0.8;
+        margin-bottom: 20px;
     }
     </style>
     """, unsafe_allow_html=True)
@@ -181,7 +211,7 @@ def generate_advice(risks, inputs, yield_t):
         elif "heat" in r.lower(): advice.append("Use organic mulching.")
     return list(set(advice)) if advice else ["Maintain standard maintenance."]
 
-# --- PDF GENERATION (FIXED BYTE FORMAT) ---
+# --- PDF GENERATION ---
 class PDF(FPDF):
     def header(self):
         self.set_font('Arial', 'B', 16)
@@ -209,29 +239,47 @@ def generate_pdf(inputs, pred_text, yield_label, risks, actions):
     pdf.chapter_title("III. Risks & Actions")
     pdf.chapter_body("\n".join([f"- {r[0]}" for r in risks]) if risks else "No risks.")
     pdf.chapter_body("\n".join([f"Action: {a}" for a in actions]))
-    # Important: Convert bytearray to bytes for Streamlit
     return bytes(pdf.output())
 
 # --- SIDEBAR ---
 with st.sidebar:
-    st.markdown("<h1 style='color: #1B5E20;'>🌾 FarmIQ</h1>", unsafe_allow_html=True)
-    selected = option_menu(None, ["Home", "Predict & Advise", "About"], icons=["house", "cpu", "info"], 
-                          styles={"nav-link-selected": {"background-color": "#1B5E20"}}, 
-                          default_index=["Home", "Predict & Advise", "About"].index(st.session_state.selected_page))
+    st.markdown("<div class='sidebar-title'>🌾 FarmIQ</div>", unsafe_allow_html=True)
+    st.markdown("<div class='sidebar-sub'>Agricultural Intelligence</div>", unsafe_allow_html=True)
+    
+    selected = option_menu(
+        menu_title=None,
+        options=["Home", "Predict & Advise", "About"],
+        icons=["house", "cpu", "info-circle"],
+        default_index=["Home", "Predict & Advise", "About"].index(st.session_state.selected_page),
+        styles={
+            "container": {"background-color": "transparent", "padding": "5px!important"},
+            "icon": {"color": "#1B5E20", "font-size": "1.2rem"},
+            "nav-link": {"font-size": "1rem", "text-align": "left", "margin": "10px", "color": "var(--text-color)"},
+            "nav-link-selected": {"background-color": "#1B5E20", "color": "white !important"},
+        }
+    )
     st.session_state.selected_page = selected
 
 # --- PAGES ---
 if selected == "Home":
-    st.markdown("<h1 style='color: #1B5E20;'>Cultivating Precision</h1>", unsafe_allow_html=True)
+    st.markdown("<h1>Cultivating Precision</h1>", unsafe_allow_html=True)
     st.write("AI-powered agricultural yield forecasting and risk analysis.")
+    
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        st.markdown("<div class='stCard'><h3>📈 Analytics</h3><p>Highly accurate yield forecasting models.</p></div>", unsafe_allow_html=True)
+    with col2:
+        st.markdown("<div class='stCard'><h3>🤖 Advisory</h3><p>Real-time AI-based farming recommendations.</p></div>", unsafe_allow_html=True)
+    with col3:
+        st.markdown("<div class='stCard'><h3>📋 Export</h3><p>Professional agronomy reports in PDF format.</p></div>", unsafe_allow_html=True)
+        
     if st.button("Get Started →"):
         st.session_state.selected_page = "Predict & Advise"
         st.rerun()
 
 elif selected == "Predict & Advise":
-    st.markdown("<h2 style='color: #1B5E20;'>Agricultural Intelligence Hub</h2>", unsafe_allow_html=True)
+    st.markdown("<h2>Agricultural Intelligence Hub</h2>", unsafe_allow_html=True)
     
-    # Input Portal
     with st.expander("📝 DATA ENTRY PORTAL", expanded=not st.session_state.prediction_made):
         if st.button("🧩 Demo Data"):
             st.session_state.sample_data = {"Item": "Maize", "Rain": 1200, "Temp": 28, "Soil": "Loamy", "Area": 2.5}
@@ -247,36 +295,22 @@ elif selected == "Predict & Advise":
                 area = st.number_input("Area (ha)", 0.1, 100.0, float(sd.get("Area", 1.0)))
             if st.form_submit_button("⚡ ANALYZE"):
                 st.session_state.prediction_made = True
-                # Store inputs in session state to persist
                 st.session_state.raw_inputs = {"Item": crop, "average_rain_fall_mm_per_year": rainfall, "avg_temp": temp, "Soil": soil, "Area": area, "pesticides_tonnes": 1.5}
                 st.rerun()
 
-    # Results Display (Persistent via Session State)
     if st.session_state.prediction_made and st.session_state.raw_inputs:
         inputs = st.session_state.raw_inputs
         model = tree_model if tree_model else linear_model
         if model:
-            # Correctly identify categorical columns for preprocessing
-            df_in = pd.DataFrame([{ 
-                "Area": "India", 
-                "Item": inputs['Item'], 
-                "Year": 2024, 
-                "average_rain_fall_mm_per_year": inputs['average_rain_fall_mm_per_year'], 
-                "pesticides_tonnes": inputs['pesticides_tonnes'], 
-                "avg_temp": inputs['avg_temp'] 
-            }])
-            
-            # Use detected categorical/numeric columns to ensure nothing is missed
+            # Preprocessing and prediction logic
+            df_in = pd.DataFrame([{ "Area": "India", "Item": inputs['Item'], "Year": 2024, "average_rain_fall_mm_per_year": inputs['average_rain_fall_mm_per_year'], "pesticides_tonnes": inputs['pesticides_tonnes'], "avg_temp": inputs['avg_temp'] }])
             cat_cols = [c for c in df_in.columns if df_in[c].dtype == 'object']
             num_cols = [c for c in df_in.columns if c not in cat_cols]
-            
             Xp_processed = apply_simple_preprocessing(df_in, feature_order, num_cols, cat_cols, medians, label_encoders)
             Xp_model = align_to_model(Xp_processed, model, feature_order, medians)
-            
             val = model.predict(Xp_model)[0] / 10000.0
             
             y_cl, y_co, y_ba = ("High", "yield-high", "badge-high") if val >= 4 else (("Medium", "yield-medium", "badge-medium") if val >= 2 else ("Low", "yield-low", "badge-low"))
-            
             st.markdown(f"<div class='metric-card'><h1 class='{y_co}'>{val:.2f} t/ha</h1><span class='badge {y_ba}'>{y_cl} Yield</span></div>", unsafe_allow_html=True)
             
             risks = analyze_risks(inputs, val)
@@ -286,13 +320,14 @@ elif selected == "Predict & Advise":
             with col1:
                 with st.container(border=True):
                     st.markdown("##### ⚠️ Risks")
-                    for r, l in risks: st.markdown(f"<span class='risk-chip {'risk-high' if l=='high' else 'risk-medium'}'>{r}</span>", unsafe_allow_html=True)
+                    if risks:
+                        for r, l in risks: st.markdown(f"<span class='risk-chip {'risk-high' if l=='high' else 'risk-medium'}'>{r}</span>", unsafe_allow_html=True)
+                    else: st.write("No major risks identified.")
             with col2:
                 with st.container(border=True):
                     st.markdown("##### ✅ Advice")
                     for a in advice: st.write(f"- {a}")
 
-            # PDF Download (Fixed)
             pdf_bytes = generate_pdf(inputs, f"{val:.2f} t/ha", y_cl, risks, advice)
             st.download_button("📥 DOWNLOAD REPORT (PDF)", bytes(pdf_bytes), f"FarmIQ_{inputs['Item']}.pdf", "application/pdf")
             
@@ -300,5 +335,7 @@ elif selected == "Predict & Advise":
                 st.session_state.prediction_made = False
                 st.session_state.raw_inputs = None
                 st.rerun()
-else:
-    st.write("FarmIQ Architecture: Random Forest + Flan-T5 Reasoning.")
+
+elif selected == "About":
+    st.markdown("<h2>System Architecture</h2>", unsafe_allow_html=True)
+    st.write("FarmIQ uses Random Forest ensembles for yield prediction and Flan-T5 for agentic farm advisory.")
