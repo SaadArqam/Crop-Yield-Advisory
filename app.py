@@ -206,11 +206,11 @@ def run_agent(inputs, model, medians_dict):
     st.caption("This report is AI-generated. Consult a certified agronomist before making decisions.")
 
 # --- End Agentic AI Layers ---
+
 mode = st.sidebar.selectbox('Input mode', ['Single record', 'Upload CSV (raw or processed)'])
 
 st.sidebar.markdown('---')
 st.sidebar.header('Model artifacts')
-# show metrics if present (try both naming conventions)
 metrics_files = []
 if os.path.exists('models'):
     for fname in os.listdir('models'):
@@ -225,7 +225,6 @@ for mf in metrics_files:
     except Exception:
         pass
 
-# show feature importances if present
 if os.path.exists('models/crop_yield_model_feature_importances.csv'):
     st.sidebar.write('Top linear features:')
     st.sidebar.dataframe(pd.read_csv('models/crop_yield_model_feature_importances.csv').head())
@@ -233,29 +232,24 @@ if os.path.exists('models/crop_yield_tree_feature_importances.csv'):
     st.sidebar.write('Top tree features:')
     st.sidebar.dataframe(pd.read_csv('models/crop_yield_tree_feature_importances.csv').head())
 
-# Helper: apply simple preprocessing to a dataframe (in-place copy)
 def apply_simple_preprocessing(df_input: pd.DataFrame) -> pd.DataFrame:
     df = df_input.copy()
-    # Fill numeric medians
     for col in (numeric_cols or []):
         if col in df.columns:
             df[col] = pd.to_numeric(df[col], errors='coerce')
             df[col] = df[col].fillna(medians.get(col, 0))
         else:
             df[col] = medians.get(col, 0)
-    # Fill and encode categorical
     for col in (categorical_cols or []):
         if col in df.columns:
             df[col] = df[col].fillna('missing').astype(str)
         else:
             df[col] = 'missing'
-        # apply saved label encoder if available
         if col in label_encoders:
             le = label_encoders[col]
             try:
                 df[col] = le.transform(df[col].astype(str))
             except Exception:
-                # fallback: if unseen values exist, map them to 'missing' class if available
                 def safe_transform(val):
                     v = str(val)
                     if v in le.classes_:
@@ -266,16 +260,12 @@ def apply_simple_preprocessing(df_input: pd.DataFrame) -> pd.DataFrame:
                         return 0
                 df[col] = df[col].apply(safe_transform)
         else:
-            # if no encoder saved, attempt simple label encoding on the fly
             df[col] = df[col].astype('category').cat.codes
-    # ensure column order matches training
     if feature_order is not None:
-        # only keep columns that are present in df
         cols_present = [c for c in feature_order if c in df.columns]
         df = df[cols_present]
     return df
 
-# Helper to align to a model's expected features
 def align_to_model(df, model, medians_dict):
     df2 = df.copy()
     expected = None
@@ -285,17 +275,14 @@ def align_to_model(df, model, medians_dict):
         expected = feature_order
     if expected is None:
         return df2
-    # Add any missing columns with median/defaults
     for col in expected:
         if col not in df2.columns:
-            # prefer medians for numeric; else fill with 0
             df2[col] = medians_dict.get(col, 0)
-    # Reindex to expected order
     df2 = df2.reindex(columns=expected)
     return df2
 
 if mode == 'Single record':
-    st.header('Single record prediction')
+    st.header('Single record prediction & Agentic Pipeline')
     if not feature_order:
         st.warning('Training data/feature order not available. Single-record inputs cannot be generated automatically. Upload a processed CSV instead.')
     else:
@@ -303,7 +290,6 @@ if mode == 'Single record':
         st.write('Enter feature values:')
         for col in feature_order:
             if col in categorical_cols:
-                # try to show human-readable options
                 if col in label_encoders:
                     classes = list(label_encoders[col].classes_)
                     selection = st.selectbox(col, classes)
@@ -314,24 +300,13 @@ if mode == 'Single record':
                 default_val = float(medians.get(col, 0)) if medians else 0.0
                 inputs[col] = st.number_input(col, value=default_val)
 
-        if st.button('Predict'):
-            X = pd.DataFrame([inputs])
-            Xp = apply_simple_preprocessing(X)
-            res = {}
-            if linear_model is not None:
-                try:
-                    Xp_l = align_to_model(Xp, linear_model, medians)
-                    res['linear_model'] = float(linear_model.predict(Xp_l)[0])
-                except Exception as e:
-                    res['linear_model_error'] = str(e)
-            if tree_model is not None:
-                try:
-                    Xp_t = align_to_model(Xp, tree_model, medians)
-                    res['tree_model'] = float(tree_model.predict(Xp_t)[0])
-                except Exception as e:
-                    res['tree_model_error'] = str(e)
-            st.subheader('Prediction')
-            st.write(res)
+        if st.button('Run Agent Pipeline'):
+            # prefer tree_model if available
+            model_to_use = tree_model if tree_model is not None else linear_model
+            if model_to_use is not None:
+                run_agent(inputs, model_to_use, medians)
+            else:
+                st.error("No trained models found in 'models/' directory.")
 
 else:
     st.header('Batch prediction from CSV')
@@ -341,10 +316,8 @@ else:
         st.write('Preview of uploaded data:')
         st.dataframe(df.head())
 
-        # Apply preprocessing
         try:
             Xp = apply_simple_preprocessing(df)
-            # reindex to saved feature_order (keep only present columns)
             if feature_order is not None:
                 Xp = Xp.reindex(columns=[c for c in feature_order if c in Xp.columns])
             st.write('Preprocessed preview:')
