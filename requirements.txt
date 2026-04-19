@@ -6,3 +6,6 @@ matplotlib
 seaborn
 joblib
 pillow
+fpdf2
+streamlit-option-menu
+plotly
