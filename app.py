@@ -6,8 +6,8 @@ import json
 
 st.set_page_config(page_title="Crop Yield Predictor", layout="centered")
 
-st.title("🌾 Crop Yield Prediction — Milestone 1 UI")
-st.write("Upload a dataset or enter single-record values to get yield predictions. The app applies the same simple preprocessing used during training: numeric median imputation and label encoding for categoricals.")
+st.title("🌾 Crop Yield Prediction — Agentic Pipeline")
+st.write("Upload a dataset or enter single-record values to get yield predictions and an agentic advisory report.")
 
 # load models
 linear_model = None
@@ -19,13 +19,11 @@ if os.path.exists('models/crop_yield_model.pkl'):
 if os.path.exists('models/crop_yield_tree.pkl'):
     tree_model = joblib.load('models/crop_yield_tree.pkl')
 
-# prefer the label encoders saved by the simple trainer
 if os.path.exists('models/label_encoders_pipeline.pkl'):
     label_encoders = joblib.load('models/label_encoders_pipeline.pkl')
 elif os.path.exists('models/label_encoders.pkl'):
     label_encoders = joblib.load('models/label_encoders.pkl')
 
-# Load medians and feature order saved by the trainer (preferred)
 feature_order = None
 medians = {}
 if os.path.exists('models/feature_order.json'):
@@ -41,7 +39,6 @@ if os.path.exists('models/medians.json'):
     except Exception:
         medians = {}
 
-# Fallback: derive from training CSV if saved order is not present
 train_df = None
 numeric_cols = []
 categorical_cols = []
@@ -64,9 +61,6 @@ if feature_order is None:
         except Exception:
             feature_order = None
 else:
-    # set cols lists from feature_order
-    # assume numeric columns appeared first as written during training
-    # try to detect numeric names by checking train CSV types
     if os.path.exists('data/yield_df.csv'):
         try:
             train_df = pd.read_csv('data/yield_df.csv')
@@ -77,7 +71,6 @@ else:
             else:
                 X_train = train_df.copy()
             detected_numeric = X_train.select_dtypes(include=['number']).columns.tolist()
-            # build numeric and categorical lists by intersection
             numeric_cols = [c for c in feature_order if c in detected_numeric]
             categorical_cols = [c for c in feature_order if c not in numeric_cols]
             if len(numeric_cols) > 0 and not medians and os.path.exists('models/medians.json'):
